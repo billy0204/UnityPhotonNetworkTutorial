@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Cinemachine;
+using TMPro;
 public class PlayerMovement : MonoBehaviourPun
 {
-    public float moveSpeed = 5f;
-
-    public Rigidbody2D rb;
-    public Animator animator;
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] TMP_Text nameText;
+    private Rigidbody2D rb;
+    private Animator animator;
     Vector2 movement;
 
     private void Start()
@@ -16,15 +17,19 @@ public class PlayerMovement : MonoBehaviourPun
         if (!photonView.IsMine)
         {
             Destroy(GetComponent<Collider2D>());
-            Destroy(this);
+            nameText.text = photonView.Owner.NickName;
         }
         else
         {
             CinemachineVirtualCamera vcam = GameObject.Find("CMcam").GetComponent<CinemachineVirtualCamera>();
             if (vcam != null) vcam.Follow = transform;
+            nameText.text = "YOU";
+            nameText.color = Color.red;
+
         }
 
-   
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
 

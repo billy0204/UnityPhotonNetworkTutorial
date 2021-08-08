@@ -19,6 +19,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField]
     private InputField nameField;
 
+    private int localPlayerIndex;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -64,6 +66,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         // add properties
         Hashtable RoomCustomProps = new Hashtable();
         RoomCustomProps.Add("SurfCount", 0);
+        RoomCustomProps.Add("Player1", 0);
+        RoomCustomProps.Add("Player2", 0);
+        RoomCustomProps.Add("Player3", 0);
+        RoomCustomProps.Add("Player4", 0);
+
+
         roomOptions.CustomRoomProperties = RoomCustomProps;
 
         PhotonNetwork.CreateRoom("RoomName_" + randomRoomName, roomOptions);
@@ -80,10 +88,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        
         if (PhotonNetwork.CurrentRoom.PlayerCount == 2 && PhotonNetwork.IsMasterClient)
         {
             Debug.Log(PhotonNetwork.CurrentRoom.PlayerCount + "/2 start game");
             PhotonNetwork.LoadLevel(1);
         }
     }
+
+
 }

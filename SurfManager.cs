@@ -9,12 +9,12 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class SurfManager : MonoBehaviourPun
 {
     public GameObject[] SpawnPoints;
-    public Rocks[] rocks;
-    public Text text;
+    private Rocks[] rocks;
+    [SerializeField] Text pingtext;
     public static SurfManager i;
 
 
-    public bool gameStart = false;
+    private bool gameStart = false;
     private void Awake()
     {
         if (i == null)
@@ -56,7 +56,7 @@ public class SurfManager : MonoBehaviourPun
         {
             rock.speed += Time.fixedDeltaTime/5;
         }
-        text.text = PhotonNetwork.GetPing().ToString();
+        pingtext.text = PhotonNetwork.GetPing().ToString();
     }
 
     private void Update()

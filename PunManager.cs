@@ -4,17 +4,19 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
-
+using Photon.Realtime;
 
 public class PunManager : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     GameObject[] SpawnPoints;
+    [SerializeField]
+    Text pingtext;
     public Text infoText;
     public static PunManager i;
     private bool startMiniGame = false;
     public int SurfCount = 0;
-
+    public int PooyanCount = 0;
     void Awake()
     {
         if (i == null)
@@ -25,7 +27,6 @@ public class PunManager : MonoBehaviourPunCallbacks
         {
             Destroy(this);
         }
-        PhotonNetwork.AutomaticallySyncScene = true;
 
     }
 
@@ -58,15 +59,26 @@ public class PunManager : MonoBehaviourPunCallbacks
     void SetChange()
     {
         SurfCount = (int)PhotonNetwork.CurrentRoom.CustomProperties["SurfCount"];
+        PooyanCount = (int)PhotonNetwork.CurrentRoom.CustomProperties["PooyanCount"];
+
     }
 
 
     private void Update()
     {
-        if(SurfCount == PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient && !startMiniGame)
+        if (SurfCount == PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient && !startMiniGame)
         {
             startMiniGame = true;
             PhotonNetwork.LoadLevel(2);
         }
+        else if (PooyanCount == PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient && !startMiniGame)
+        {
+            startMiniGame = true;
+            PhotonNetwork.LoadLevel(3);
+        }
+
+            pingtext.text = PhotonNetwork.GetPing().ToString();
+
+
     }
 }

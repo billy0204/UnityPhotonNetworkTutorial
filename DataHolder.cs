@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class DataHolder : MonoBehaviourPun
+public class DataHolder : MonoBehaviourPunCallbacks
 {
 
     private string winnerName;
     public static DataHolder i;
     private const byte SHOW_WINNER_NAME_CODE = 1;
-
+    public int playerIndex { get; private set; }
 
     private void Awake()
     {
@@ -30,8 +32,6 @@ public class DataHolder : MonoBehaviourPun
 
     }
 
-
- 
 
     private void NetworkingClient_EventReceived(ExitGames.Client.Photon.EventData obj)
     {
@@ -70,4 +70,7 @@ public class DataHolder : MonoBehaviourPun
         PunManager.i.infoText.text = "";
         winnerName = "";
     }
+
+
+   
 }

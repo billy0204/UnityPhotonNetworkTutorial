@@ -7,13 +7,53 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class LevelTrigger : MonoBehaviour
 {
 
-    public int nextLevel;
+    [SerializeField] string levelText;
+    private bool isActive = false;
 
-    bool isStay = false;
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
         GetComponent<SpriteRenderer>().enabled = false;
+    }
+
+
+
+    private void Update()
+    {
+        switch (levelText)
+        {
+            case "Surf":
+                if(PunManager.i.SurfCount > 0)
+                {
+                    isActive = true;
+                }
+                else
+                {
+                    isActive = false;
+                }
+                break;
+
+            case "Pooyan":
+                if (PunManager.i.PooyanCount > 0)
+                {
+                    isActive = true;
+                }
+                else
+                {
+                    isActive = false;
+                }
+                break;
+        }
+
+
+        if (isActive) 
+        {
+            GetComponent<SpriteRenderer>().enabled = true;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().enabled = false;
+        }
     }
 
 
@@ -21,8 +61,16 @@ public class LevelTrigger : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            GetComponent<SpriteRenderer>().enabled = true;
-            PunManager.i.infoText.text = $"{PunManager.i.SurfCount}/{PhotonNetwork.CurrentRoom.PlayerCount}, waiting for other player";
+            switch (levelText)
+            {
+                case "Surf":
+                    PunManager.i.infoText.text = $"{PunManager.i.SurfCount}/{PhotonNetwork.CurrentRoom.PlayerCount}, waiting for other player";
+                    break;
+
+                case "Pooyan":
+                    PunManager.i.infoText.text = $"{PunManager.i.PooyanCount}/{PhotonNetwork.CurrentRoom.PlayerCount}, waiting for other player";
+                    break;
+            }
 
         }
 
@@ -35,9 +83,8 @@ public class LevelTrigger : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            PunManager.i.SurfCount++;
-            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable() { { "SurfCount", PunManager.i.SurfCount } });
 
+            SetProperties(1);
         }
     }
 
@@ -45,11 +92,28 @@ public class LevelTrigger : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            PunManager.i.SurfCount--;
-            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable() { { "SurfCount", PunManager.i.SurfCount } });
+            SetProperties(-1);
             PunManager.i.infoText.text = "";
         }
 
+
+    }
+
+
+    private void SetProperties(int n)
+    {
+        switch (levelText)
+        {
+            case "Surf":
+                PunManager.i.SurfCount += n;
+                PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable() { { $"{levelText}Count", PunManager.i.SurfCount } });
+                break;
+
+            case "Pooyan":
+                PunManager.i.PooyanCount += n;
+                PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable() { { $"{levelText}Count", PunManager.i.PooyanCount } });
+                break;
+        }
 
     }
 }
